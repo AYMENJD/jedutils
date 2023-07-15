@@ -24,6 +24,9 @@ setup(
         "Tracker": "https://github.com/AYMENJD/jedutils/issues",
     },
     packages=find_packages(),
+    extras_require={
+        "all": ["redis", "aiohttp"],
+    },
     keywords=[
         "utilities",
         "tools",

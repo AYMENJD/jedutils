@@ -10,9 +10,9 @@ You can install Jedutils using `pip`:
 pip install jedutils
 ```
 
-To install the development version from Github, use the following command:
+To install all the dependencies for all utilities, use the following command:
 ```bash
-pip install git+https://github.com/AYMENJD/jedutils.git
+pip install jedutils[all]
 ```
 
 ## Contributing
