@@ -7,11 +7,10 @@ async def download_file(
     url: str,
     filename: str,
     chunk_size: int = 8192,
-    headers: dict = None,
     ignore_status: bool = False,
-    timeout: float = None,
     progress_callback: callable = None,
     thread_pool=None,
+    **kwargs
 ) -> None:
     """
     Asynchronously download a file from the given URL and saves it to the specified filename using chunked downloading
@@ -36,14 +35,8 @@ async def download_file(
         chunk_size (``int``, *optional*):
             The size of each chunk to download in bytes. Default is 8192 bytes (8 KB)
 
-        headers (``dict``, *optional*):
-            A dictionary of headers to send with the request. Default is ``None``
-
         ignore_status (``bool``, *optional*):
             Whether to ignore errors in the response from the server. Default is ``False``
-
-        timeout (``float``, *optional*):
-            A timeout for the request. Default is ``None``
 
         progress_callback (``callable``, *optional*):
             A callable function to be called with the download progress, in bytes
@@ -51,6 +44,8 @@ async def download_file(
         thread_pool:
             A thread pool to use for blocking operations. Default is ``None``
 
+        \*\*kwargs:
+            Any additional keyword arguments to pass to the `aiohttp.get` call
     Returns:
         ``None``
 
@@ -58,7 +53,7 @@ async def download_file(
         :py:class:`aiohttp.ClientResponseError`
     """
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, timeout=timeout, headers=headers) as response:
+        async with session.get(url, **kwargs) as response:
             if not ignore_status:
                 response.raise_for_status()
 
