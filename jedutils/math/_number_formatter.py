@@ -1,4 +1,4 @@
-def format_bytes(size: int):
+def format_bytes(size: int) -> str:
     """
     Converts a size in bytes to a human-readable format
 
@@ -20,7 +20,7 @@ def format_bytes(size: int):
     return f"{size:.2f} {suffixes[i]}"
 
 
-def parse_bytes(size_str: str):
+def parse_bytes(size_str: str) -> str:
     """
     Converts a size in a human-readable format to bytes
 
@@ -64,7 +64,7 @@ units = [
 ]
 
 
-def format_duration(seconds: int, format_option: str = "short"):
+def format_duration(seconds: int, format_option: str = "short") -> str:
     """
     Formats the given duration in seconds into a human-readable string representation
 
@@ -119,3 +119,105 @@ def format_duration(seconds: int, format_option: str = "short"):
         return ":".join(time_parts)
     else:
         raise ValueError("Invalid format option. Available options: 'long', 'short'")
+
+
+def format_number_short(number: int) -> str:
+    """
+    Convert a number to a short format with a specified number of decimal places
+
+    Args:
+        number (``float``):
+            The number to format
+
+    Returns:
+        ``str``:
+            The formatted number in short format
+    """
+
+    suffixes = {0: "", 3: "K", 6: "M", 9: "B", 12: "T", 15: "Q"}
+
+    order = 0
+    while number >= 10**3 and order < max(suffixes.keys()):
+        order += 3
+        number /= 10**3
+
+    if number.is_integer():
+        formatted_number = f"{int(number)}"
+    else:
+        formatted_number = f"{number:.1f}".rstrip("0").rstrip(".")
+
+    formatted_number += suffixes.get(order, "")
+
+    return formatted_number
+
+
+def convert_to_bytes(value: int, unit: str) -> int:
+    """
+    Convert a number with a unit prefix into bytes
+
+    Args:
+        value (``int``):
+            The numerical value
+
+        unit (``str``):
+            The unit prefix (e.g., "B", "KB", "MB", "GB", "TB", "PB")
+
+    Returns:
+        ``int``:
+            The value converted to bytes
+    """
+
+    unit = unit.upper()
+    if unit == "B":
+        return value
+    elif unit == "KB":
+        return int(value * 1024)
+    elif unit == "MB":
+        return int(value * 1024 * 1024)
+    elif unit == "GB":
+        return int(value * 1024 * 1024 * 1024)
+    elif unit == "TB":
+        return int(value * 1024 * 1024 * 1024 * 1024)
+    elif unit == "PB":
+        return int(value * 1024 * 1024 * 1024 * 1024 * 1024)
+    else:
+        raise ValueError("Invalid unit. Use 'B', 'KB', 'MB', 'GB', 'TB', or 'PB'.")
+
+
+def to_numeric(value: int, unit: str) -> int:
+    """
+    Convert a number with a unit prefix into its numerical value
+
+    Args:
+        value (``int``):
+            The numerical value
+
+        unit (``str``):
+            The unit prefix (e.g., "U" for "UNIT", "T" for "TEN", "H" for "HUNDRED", "K" for "THOUSAND",
+                    "M" for "MILLION", "B" for "BILLION", "T" for "TRILLION")
+
+    Returns:
+        ``float``:
+            The value converted to its numerical value
+    """
+
+    unit = unit.upper()
+    if unit == "U":
+        return value
+    elif unit == "T":
+        return value * 10
+    elif unit == "H":
+        return value * 100
+    elif unit == "K":
+        return value * 1000
+    elif unit == "M":
+        return value * 1000000
+    elif unit == "B":
+        return value * 1000000000
+    elif unit == "T":
+        return value * 1000000000000
+    else:
+        raise ValueError(
+            "Invalid unit. Use 'U' for 'UNIT', 'T' for 'TEN', 'H' for 'HUNDRED', 'K' for 'THOUSAND', "
+            "'M' for 'MILLION', 'B' for 'BILLION', or 'T' for 'TRILLION'."
+        )
