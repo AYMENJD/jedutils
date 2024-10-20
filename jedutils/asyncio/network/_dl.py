@@ -1,5 +1,10 @@
 import asyncio
-import aiohttp
+
+try:
+    import aiohttp
+except ImportError:
+    aiohttp = None
+
 import os
 
 
@@ -10,7 +15,7 @@ async def download_file(
     ignore_status: bool = False,
     progress_callback: callable = None,
     thread_pool=None,
-    **kwargs
+    **kwargs,
 ) -> None:
     """
     Asynchronously download a file from the given URL and saves it to the specified filename using chunked downloading
@@ -52,6 +57,10 @@ async def download_file(
     Raises:
         :py:class:`aiohttp.ClientResponseError`
     """
+
+    if not aiohttp:
+        raise RuntimeError("aiohttp is not installed. Try pip install aiohttp")
+
     async with aiohttp.ClientSession() as session:
         async with session.get(url, **kwargs) as response:
             if not ignore_status:

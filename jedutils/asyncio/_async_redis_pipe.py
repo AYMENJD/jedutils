@@ -1,5 +1,9 @@
 import asyncio
-from redis import Redis
+
+try:
+    from redis import Redis
+except ImportError:
+    Redis = None
 
 
 class AsyncRedisPipe:
@@ -39,6 +43,10 @@ class AsyncRedisPipe:
             loop (:py:class:`asyncio.AbstractEventLoop`, *optional*):
                 The event loop to use. Defaults to :py:class:`asyncio.get_event_loop()`.
         """
+
+        if not Redis:
+            raise RuntimeError("Redis is not installed. Try pip install redis")
+
         self.redis = redis
         self.pipe_max_size = pipe_max_size
         self.__queue = asyncio.Queue()
