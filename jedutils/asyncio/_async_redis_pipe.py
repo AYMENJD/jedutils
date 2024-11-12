@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 try:
     from redis import Redis
@@ -28,6 +29,7 @@ class AsyncRedisPipe:
         pipe_max_size: int = 200,
         workers: int = 8,
         loop: asyncio.AbstractEventLoop = None,
+        debug: bool = False,
     ) -> None:
         """
         Args:
@@ -42,6 +44,9 @@ class AsyncRedisPipe:
 
             loop (:py:class:`asyncio.AbstractEventLoop`, *optional*):
                 The event loop to use. Defaults to :py:class:`asyncio.get_event_loop()`.
+
+            debug (``bool``, *optional*):
+                Whether to enable debug logging. Defaults to ``False``.
         """
 
         if not Redis:
@@ -49,6 +54,9 @@ class AsyncRedisPipe:
 
         self.redis = redis
         self.pipe_max_size = pipe_max_size
+        self.debug = debug
+        self.logger = logging.getLogger(__name__)
+
         self.__queue = asyncio.Queue()
         self.__loop = (
             asyncio.get_event_loop()
@@ -83,6 +91,9 @@ class AsyncRedisPipe:
                 except asyncio.QueueEmpty:
                     break
                 else:
+                    if self.debug:
+                        self.logger.debug(f"Executing command: {data[1]}")
+
                     pipe.execute_command(*data[1])
                     futures.append(data[0])
                     count += 1
@@ -92,6 +103,9 @@ class AsyncRedisPipe:
     async def __handle_pipe_line(self, futures: list, pipe):
         results = await pipe.execute(False)
         for x, result in enumerate(results):
+            if self.debug:
+                self.logger.debug(f"Result: {result}")
+
             if isinstance(result, BaseException):
                 futures[x].set_exception(result)
             else:
