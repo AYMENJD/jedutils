@@ -17,7 +17,7 @@ async def download_file(
     thread_pool=None,
     **kwargs,
 ) -> None:
-    """
+    r"""
     Asynchronously download a file from the given URL and saves it to the specified filename using chunked downloading
 
     Example:
