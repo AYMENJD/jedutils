@@ -15,7 +15,7 @@ def b62encode(data: Union[bytes, int]) -> str:
             >>> b62encode(123456789)
             '8M0kX'
 
-    \Args:
+    \Parameters:
         data (``bytes`` or ``int``):
             The data to be encoded. It must be either bytes or an integer
 
@@ -50,7 +50,7 @@ def b62decode(b62_string: str, as_int: bool = False) -> Union[bytes, int]:
             >>> b62decode("8M0kX", as_int=True)
             123456789
 
-    \Args:
+    \Parameters:
         b62_string (``str``):
             The Base62 encoded string to decode
 

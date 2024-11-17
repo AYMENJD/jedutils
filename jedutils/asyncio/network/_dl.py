@@ -30,7 +30,7 @@ async def download_file(
 
             await download_file('https://example.com/large_file.zip', 'my_large_file.zip', progress_callback=my_callback)
 
-    Args:
+    Parameters:
         url (``str``):
             The URL of the file to download
 

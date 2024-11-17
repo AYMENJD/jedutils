@@ -14,7 +14,7 @@ def split_text(text: str, chunk_size: int = 4096):
             ...     # Send each chunk as a separate message
             ...     send_message(chunk)
 
-    Args:
+    Parameters:
         text (``str``):
             The text to split
 

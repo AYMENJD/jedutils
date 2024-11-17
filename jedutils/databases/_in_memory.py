@@ -21,7 +21,7 @@ class InMemoryDB:
             # Delete a key-value pair
             db.delete('key1')
 
-    Args:
+    Parameters:
         max_keys (``int``, *optional*):
             The maximum number of keys that can be stored in the database
             If None (default), there is no limit on the number of keys
@@ -36,7 +36,7 @@ class InMemoryDB:
         """
         Sets the value associated with a key in the database
 
-        Args:
+        Parameters:
             key (``str``):
                 The key to set the value for
 
@@ -55,7 +55,7 @@ class InMemoryDB:
         """
         Gets the value associated with a key in the database
 
-        Args:
+        Parameters:
             key (``str``):
                 The key to get the value for
 
@@ -68,7 +68,7 @@ class InMemoryDB:
         """
         Deletes the key-value pair with the given key from the database
 
-        Args:
+        Parameters:
             key (``str``):
                 The key to delete
 

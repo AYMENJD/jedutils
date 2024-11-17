@@ -32,7 +32,7 @@ class AsyncRedisPipe:
         debug: bool = False,
     ) -> None:
         """
-        Args:
+        Parameters:
             redis (``Redis``):
                 The Redis client
 

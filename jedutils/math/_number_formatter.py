@@ -2,7 +2,7 @@ def format_bytes(size: int) -> str:
     """
     Converts a size in bytes to a human-readable format
 
-    Args:
+    Parameters:
         size (``int``):
             The size in bytes
 
@@ -24,7 +24,7 @@ def parse_bytes(size_str: str) -> str:
     """
     Converts a size in a human-readable format to bytes
 
-    Args:
+    Parameters:
         size_str (``str``):
             The size in a human-readable format, e.g., ``2.00 KB``
 
@@ -68,7 +68,7 @@ def format_duration(seconds: int, format_option: str = "short") -> str:
     """
     Formats the given duration in seconds into a human-readable string representation
 
-    Args:
+    Parameters:
         seconds (``int``):
             The duration in seconds
 
@@ -125,7 +125,7 @@ def format_number_short(number: int) -> str:
     """
     Convert a number to a short format with a specified number of decimal places
 
-    Args:
+    Parameters:
         number (``float``):
             The number to format
 
@@ -155,7 +155,7 @@ def convert_to_bytes(value: int, unit: str) -> int:
     """
     Convert a number with a unit prefix into bytes
 
-    Args:
+    Parameters:
         value (``int``):
             The numerical value
 
@@ -188,7 +188,7 @@ def to_numeric(value: int, unit: str) -> int:
     """
     Convert a number with a unit prefix into its numerical value
 
-    Args:
+    Parameters:
         value (``int``):
             The numerical value
 

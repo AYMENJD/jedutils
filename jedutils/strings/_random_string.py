@@ -12,7 +12,7 @@ chars = string.ascii_letters + string.digits
 def random_string(length: int):
     """Generate a random string
 
-    Args:
+    Parameters:
         length (``int``):
             The length of the string
     """
@@ -23,7 +23,7 @@ def random_string(length: int):
 def random_hex_string(length):
     """Generate a random hex string
 
-    Args:
+    Parameters:
         length (``int``):
             The length of the string (in bytes)
     """

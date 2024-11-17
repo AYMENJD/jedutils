@@ -15,7 +15,7 @@ class ConcurrencyManager:
         """
         Acquire a lock for the specified ID
 
-        Args:
+        Parameters:
             ID (``str``):
                 Identifier for the operation
         """
@@ -28,7 +28,7 @@ class ConcurrencyManager:
         """
         Release a lock for the specified ID
 
-        Args:
+        Parameters:
             ID (``str``):
                 Identifier for the operation
 
@@ -50,7 +50,7 @@ class ConcurrencyManager:
         """
         Get the current count of operations for the specified ID
 
-        Args:
+        Parameters:
             ID (``str``):
                 Identifier for the operation
 
@@ -67,7 +67,7 @@ class ConcurrencyManager:
         """
         Create a context for the specified ID, acquiring and releasing a lock
 
-        Args:
+        Parameters:
             ID (``str``):
                 Identifier for the operation
         """
@@ -83,7 +83,7 @@ class ConcurrencyManager:
         """
         Create a context with a limit on the number of concurrent operations.
 
-        Args:
+        Parameters:
             ID (``str``):
                 Identifier for the operation.
 
@@ -109,7 +109,7 @@ class ConcurrencyManager:
         """
         Wait until the count for the specified ID reaches the target count
 
-        Args:
+        Parameters:
             ID (``str``):
                 Identifier for the operation
 
