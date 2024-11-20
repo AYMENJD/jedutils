@@ -1,5 +1,5 @@
 def as_tdlib_message_id(message_id: int) -> int:
-    """
+    r"""
     Convert server message ID to TDLib message ID
 
     \Example:
@@ -20,7 +20,7 @@ def as_tdlib_message_id(message_id: int) -> int:
 
 
 def as_server_message_id(message_id: int) -> int:
-    """
+    r"""
     Converts TDLib message ID to server message ID
 
     \Example:
@@ -43,7 +43,7 @@ def as_server_message_id(message_id: int) -> int:
 
 
 def as_server_message_id_unchecked(message_id: int) -> int:
-    """
+    r"""
     Converts TDLib message ID to server message ID
 
     \Example:
@@ -68,7 +68,7 @@ def as_server_message_id_unchecked(message_id: int) -> int:
 
 
 def get_supergroup_chat_id(supergroup_id: int) -> int:
-    """
+    r"""
     Convert supergroup_id to chat_id
 
     \Example:
@@ -87,7 +87,7 @@ def get_supergroup_chat_id(supergroup_id: int) -> int:
 
 
 def get_supergroup_id(chat_id: int) -> int:
-    """
+    r"""
     Convert chat_id to supergroup_id
 
     Example:

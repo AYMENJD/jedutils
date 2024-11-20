@@ -5,7 +5,7 @@ BASE62_LOOKUP = {char: index for index, char in enumerate(BASE62_CHARS)}
 
 
 def b62encode(data: Union[bytes, int]) -> str:
-    """
+    r"""
     Encodes the given data into a base62 string
 
     \Example:
@@ -40,7 +40,7 @@ def b62encode(data: Union[bytes, int]) -> str:
 
 
 def b62decode(b62_string: str, as_int: bool = False) -> Union[bytes, int]:
-    """
+    r"""
     Decodes a Base62 encoded string
 
     \Example:

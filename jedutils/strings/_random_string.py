@@ -11,7 +11,7 @@ chars_len = len(chars)
 
 
 def random_string(length: int):
-    """Generate a random string
+    r"""Generate a random string
 
     Parameters:
         length (``int``):
@@ -22,7 +22,7 @@ def random_string(length: int):
 
 
 def random_string_urandom(length: int):
-    """Generate a random string using os.urandom
+    r"""Generate a random string using os.urandom
 
     Parameters:
         length (``int``):
@@ -33,7 +33,7 @@ def random_string_urandom(length: int):
 
 
 def random_hex_string(length):
-    """Generate a random hex string
+    r"""Generate a random hex string
 
     Parameters:
         length (``int``):
