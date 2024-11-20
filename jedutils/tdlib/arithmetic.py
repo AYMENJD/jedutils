@@ -92,7 +92,7 @@ def get_supergroup_id(chat_id: int) -> int:
 
     Example:
         >>> get_supergroup_id(-1000123456789)
-        -123456789
+        123456789
 
     Parameters:
         chat_id (``int``):
@@ -102,4 +102,4 @@ def get_supergroup_id(chat_id: int) -> int:
         ``int``: The supergroup ID
     """
 
-    return -(-1000000000000 - chat_id)
+    return -1000000000000 - chat_id
