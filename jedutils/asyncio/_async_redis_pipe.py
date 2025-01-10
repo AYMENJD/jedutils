@@ -21,6 +21,8 @@ class AsyncRedisPipe:
     >>> redis_calls = [pipe.get("key") for i in range(100000)]
     >>> await asyncio.gather(*redis_calls) # 100K Concurrent redis calls
 
+    Disclaimer:
+        This class is intended to be used with basic redis commands, other non redis commands (a.k.a client side commands) are not supported (eg. `redis.lock`) and such call can have unexpected behavior.
     """
 
     def __init__(
@@ -94,15 +96,19 @@ class AsyncRedisPipe:
                     if self.debug:
                         self.logger.debug(f"Executing command: {data[1]}")
 
-                    pipe.execute_command(*data[1])
+                    try:
+                        getattr(pipe, data[1])(*data[2], **data[3])
+                    except Exception as e:
+                        data[0].set_exception(e)
+                        continue
+
                     futures.append(data[0])
                     count += 1
 
             self.__loop.create_task(self.__handle_pipe_line(futures, pipe))
 
     async def __handle_pipe_line(self, futures: list, pipe):
-        results = await pipe.execute(False)
-        for x, result in enumerate(results):
+        for x, result in enumerate((await pipe.execute(False))):
             if self.debug:
                 self.logger.debug(f"Result: {result}")
 
@@ -112,13 +118,9 @@ class AsyncRedisPipe:
                 futures[x].set_result(result)
 
     def __getattr__(self, name):
-        if name == "delete":
-            name = "del"
-
-        def wrapper(*args):
+        def wrapper(*args, **kwargs):
             fut = asyncio.Future()
-            args = (name,) + args
-            self.__queue.put_nowait((fut, args))
+            self.__queue.put_nowait((fut, name, args, kwargs))
             return fut
 
         return wrapper
