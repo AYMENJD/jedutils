@@ -105,7 +105,7 @@ class AsyncRedisPipe:
                     futures.append(data[0])
                     count += 1
 
-            self.__loop.create_task(self.__handle_pipe_line(futures, pipe))
+            await self.__handle_pipe_line(futures, pipe)
 
     async def __handle_pipe_line(self, futures: list, pipe):
         for x, result in enumerate((await pipe.execute(False))):
