@@ -1,6 +1,6 @@
 from re import findall
-from setuptools import setup, find_packages
 
+from setuptools import find_packages, setup
 
 with open("jedutils/__init__.py", "r") as f:
     version = findall(r"__version__ = \"(.+)\"", f.read())[0]
@@ -15,7 +15,7 @@ setup(
     description="Jedutils is a Python utilities package that provides a collection of useful helper functions.",
     long_description=readme,
     long_description_content_type="text/markdown",
-    author="AYMEN Mohammed",
+    author="AYMEN A",
     author_email="let.me.code.safe@gmail.com",
     url="https://github.com/AYMENJD/jedutils",
     license="MIT",
