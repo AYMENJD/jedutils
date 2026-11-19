@@ -118,11 +118,16 @@ class AsyncRedisPipe:
                 futures[x].set_result(result)
 
     def __getattr__(self, name):
-        def wrapper(*args, **kwargs):
-            fut = asyncio.Future()
-            self.__queue.put_nowait((fut, name, args, kwargs))
-            return fut
+        wrapper = self.__dict__.get(name)
+        if wrapper is None:
+            def wrapper(*args, **kwargs):
+                fut = asyncio.Future()
+                self.__queue.put_nowait((fut, name, args, kwargs))
+                return fut
 
+            # cache in the instance dict so later calls skip __getattr__
+            # and the per-call closure allocation
+            self.__dict__[name] = wrapper
         return wrapper
 
     def close(self):
