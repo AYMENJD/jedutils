@@ -18,16 +18,16 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Build Jedutils
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: "3.15"
       - run: |
           python -m pip install --upgrade pip
-          python -m pip install --upgrade setuptools wheel twine
-          python setup.py sdist
+          python -m pip install --upgrade build
+          python -m build
 
       - name: Upload to pypi
         uses: pypa/gh-action-pypi-publish@release/v1
