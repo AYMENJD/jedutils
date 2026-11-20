@@ -3,8 +3,13 @@ import logging
 
 try:
     from redis import Redis
+    from redis.exceptions import (
+        ConnectionError as RedisConnectionError,
+        TimeoutError as RedisTimeoutError,
+    )
 except ImportError:
     Redis = None
+    RedisConnectionError = RedisTimeoutError = ()
 
 
 class AsyncRedisPipe:
@@ -79,13 +84,12 @@ class AsyncRedisPipe:
 
     async def __worker(self):
         while self.is_running:
+            batch = []
             pipe = self.redis.pipeline(False)
-            futures = []
-            count = 0
 
-            while count <= self.pipe_max_size:
+            while len(batch) <= self.pipe_max_size:
                 try:
-                    if count == 0:
+                    if not batch:
                         data = await self.__queue.get()
                     else:
                         data = self.__queue.get_nowait()
@@ -102,13 +106,53 @@ class AsyncRedisPipe:
                         data[0].set_exception(e)
                         continue
 
-                    futures.append(data[0])
-                    count += 1
+                    batch.append(data)
 
-            await self.__handle_pipe_line(futures, pipe)
+            if batch:
+                await self.__handle_pipe_line(batch, pipe)
 
-    async def __handle_pipe_line(self, futures: list, pipe):
-        for x, result in enumerate((await pipe.execute(False))):
+    async def __handle_pipe_line(self, batch: list, pipe):
+        futures = [data[0] for data in batch]
+        results = None
+        delay = 0.5
+
+        while True:
+            try:
+                results = await pipe.execute(False)
+            except (RedisConnectionError, RedisTimeoutError) as e:
+                # Transient failure (e.g. BusyLoadingError while Redis is
+                # loading its dataset after a restart, or a network blip):
+                # rebuild the pipeline and retry the same batch instead of
+                # letting the worker die and leaving callers hanging forever.
+                # pipe.execute() resets its command stack in a finally, so the
+                # batch must be replayed onto a fresh pipeline.
+                results = None
+                if not self.is_running:
+                    break
+                self.logger.warning(
+                    f"Redis pipeline failed ({e.__class__.__name__}), "
+                    f"retrying {len(batch)} command(s) in {delay}s"
+                )
+                await asyncio.sleep(delay)
+                if not self.is_running:
+                    break
+                delay = min(delay * 2, 10)
+                pipe = self.redis.pipeline(False)
+                for _, name, args, kwargs in batch:
+                    getattr(pipe, name)(*args, **kwargs)
+            except Exception as e:
+                self.__fail_batch(futures, e)
+                return
+            else:
+                break
+
+        if results is None:
+            self.__fail_batch(
+                futures, RuntimeError("AsyncRedisPipe is closed")
+            )
+            return
+
+        for x, result in enumerate(results):
             if self.debug:
                 self.logger.debug(f"Result: {result}")
 
@@ -116,6 +160,11 @@ class AsyncRedisPipe:
                 futures[x].set_exception(result)
             else:
                 futures[x].set_result(result)
+
+    def __fail_batch(self, futures: list, e: Exception):
+        for fut in futures:
+            if not fut.done():
+                fut.set_exception(e)
 
     def __getattr__(self, name):
         wrapper = self.__dict__.get(name)
@@ -135,3 +184,10 @@ class AsyncRedisPipe:
         self.is_running = False
         for worker in self.__worker_tasks:
             worker.cancel()
+        while not self.__queue.empty():
+            try:
+                fut, *_ = self.__queue.get_nowait()
+            except asyncio.QueueEmpty:
+                break
+            if not fut.done():
+                fut.set_exception(RuntimeError("AsyncRedisPipe is closed"))
